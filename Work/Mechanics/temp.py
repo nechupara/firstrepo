@@ -1,48 +1,13 @@
-# інтерполяція для визначення коефіцієнта k1 для визначення лінійного експлуатаційного навантаження від ваги ожеледі Gmp
-# значення h від 0 до 100
-h = 85
+k_g_dict = {5: 0.8, 10: 1.0, 20: 1.15, 30: 1.3, 40: 1.4, 50: 1.45, 70: 1.6, 100: 1.75}
 
+h = 3
 
-def interpol_k1():
-    h_k1 = {0:0, 5:0.7, 10:1, 20:1.3, 30:1.7, 50:2.2, 70:2.7, 100:3.3}
-    if h in h_k1:
-        return h_k1[h]
-    elif 0 < h < 5:
-        h0 = 0
-        k1_0 = h_k1[h0]
-        h1 = 5
-        k1_1 = h_k1[h1]
-    elif 5 < h < 10:
-        h0 = 5
-        k1_0 = h_k1[h0]
-        h1 = 10
-        k1_1 = h_k1[h1]
-    elif  10 < h < 20:
-        h0 = 10
-        k1_0 = h_k1[h0]
-        h1 = 20
-        k1_1 = h_k1[h1]
-    elif 20 < h < 30:
-        h0 = 20
-        k1_0 = h_k1[h0]
-        h1 = 30
-        k1_1 = h_k1[h1]
-    elif 30 < h < 50:
-        h0 = 30
-        k1_0 = h_k1[h0]
-        h1 = 50
-        k1_1 = h_k1[h1]
-    elif 50 < h < 70:
-        h0 = 50
-        k1_0 = h_k1[h0]
-        h1 = 70
-        k1_1 = h_k1[h1]
-    elif 70 < h < 100:
-        h0 = 70
-        k1_0 = h_k1[h0]
-        h1 = 100
-        k1_1 = h_k1[h1]
-    return k1_0 + (k1_1 - k1_0)/(h1 - h0)*(h - h0)
-
-
-print(interpol_k1())
+len_dict = len(k_g_dict)
+list_k_g = list(k_g_dict)
+# print(list_k_g)
+print(len_dict)
+for i in range(1, len_dict):
+    print(i)
+    # if list_k_g[i-1] < h < list_k_g[1]:
+    #     return
+# def find_k_g():

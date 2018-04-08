@@ -1,5 +1,6 @@
-def interpolation(x0,y0,x1,y1,x):
-    return
+def interpolation(x0, y0, x1, y1, x):
+    y = y0 + (y1 - y0) / (x1 - x0) * (x - x0)
+    return y
 
 
 
@@ -13,7 +14,7 @@ x1 = 11.74
 y1 = 320
 
 
-
+# y = y0 + (y1 - y0)/(x1 - x0)*(x - x0)
 print(y0 + (y1 - y0)/(x1 - x0)*(x - x0))
 
 #Графическое окно:
