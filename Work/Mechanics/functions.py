@@ -382,3 +382,4 @@ def find_l_3k():
 #     (1 - (sigma_sr_temp / sigma_nb_temp) ** 2))
 
 # l_2k = 2*sigma_sr_temp
+#для коммита
