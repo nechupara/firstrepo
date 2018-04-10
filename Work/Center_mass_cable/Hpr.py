@@ -5,31 +5,31 @@
 для габаритного пролёта. наверно :)
 """
 
-height_opora_A = 5
-ground_A = -2
+height_opora_A = 18.7  # Высота подвеса провода на левой (условно) опоре
+ground_A = 72.73  # Уровень земли левой (условно) опоры
 
-height_opora_B = 5
-ground_B = 3
+height_opora_B = 19.8  # Высота подвеса провода на правой (условно) опоре
+ground_B = 72.71  # Уровень земли правой (условно) опоры
 
-distance_A_B = 100
+distance_A_B = 281  # Пролёт между опорами
 
-#расстояние по горизонтали до опоры с наивысшей точкой подвеса:
-from_f_to_tower = 54.78
+from_f_to_tower = 140.6  # расстояние по горизонтали до опоры с наивысшей точкой подвеса
 
-#максимальная стрела от горизонтали, проведённой от самой высшей точки подвеса:
-f_max = 6.8206
+f_max = 7.9  # максимальная стрела от горизонтали, проведённой от самой высшей точки подвеса
 
-#расчёт отметок (высоты) подвеса провода:
+# расчёт отметок (высоты) подвеса провода:
 level_cable_A = ground_A + height_opora_A
 level_cable_B = ground_B + height_opora_B
-#инвертирование высот подвеса для случая, если высота левой опоры ниже правой:
+
+# инвертирование высот подвеса для случая, если высота левой опоры ниже правой:
 if level_cable_A < level_cable_B:
     level_cable_A, level_cable_B = level_cable_B, level_cable_A
 
 level_join_line = level_cable_A - from_f_to_tower/distance_A_B*(level_cable_A - level_cable_B)
 print('уровень соединительной линии: ' + str(level_join_line))
 delta_f = level_cable_A - level_join_line
-#стрела до линии, соединяющей точки подвеса:
+
+# стрела до линии, соединяющей точки подвеса:
 strela = f_max - delta_f
 print('фактическая стрела: ' + str(strela))
 Hpr = (height_opora_A + height_opora_B)/2 - 2/3*strela
