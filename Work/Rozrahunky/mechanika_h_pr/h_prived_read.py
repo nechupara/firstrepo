@@ -108,7 +108,7 @@ f_max = float(strila)
 level_cable_A = ground_A + height_opora_A
 level_cable_B = ground_B + height_opora_B
 
-if level_cable_A - level_cable_B < 0.0000001 or flag_vidstan:
+if abs(level_cable_A - level_cable_B) < 0.0000001 or flag_vidstan:
     from_f_to_tower = distance_A_B/2
 else:
     from_f_to_tower = float(vidstan)
