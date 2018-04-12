@@ -1,0 +1,2 @@
+sigma_max = 45
+sigm_sredn = 30

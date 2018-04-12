@@ -131,24 +131,39 @@ strela = f_max - delta_f
 Hpr = (height_opora_A + height_opora_B)/2 - 2/3*strela
 
 
-print('Высота подвеса опоры А = ' + str(height_opora_A))
-print('Отметка земли  опоры А = ' + str(ground_A))
-print('///////')
-print('Высота подвеса опоры В = ' + str(height_opora_B))
-print('Отметка земли  опоры В = ' + str(ground_B))
-print('///////')
-print('Пролёт = ' + str(distance_A_B))
-print('Макс. стрела от горизонтали = ' + str(f_max))
-print('Расстояние до наивысшей опоры = ' + str(from_f_to_tower))
-print('///////')
-print('уровень соединительной линии: ' + str(level_join_line))
-print('фактическая стрела: ' + str(strela))
-print('')
-print('========================================')
-print('Приведенная высота центра массы = ' + str(round(Hpr, 2)))
-print('========================================')
+# print('Высота подвеса опоры А = ' + str(height_opora_A))
+# print('Отметка земли  опоры А = ' + str(ground_A))
+# print('///////')
+# print('Высота подвеса опоры В = ' + str(height_opora_B))
+# print('Отметка земли  опоры В = ' + str(ground_B))
+# print('///////')
+# print('Пролёт = ' + str(distance_A_B))
+# print('Макс. стрела от горизонтали = ' + str(f_max))
+# print('Расстояние до наивысшей опоры = ' + str(from_f_to_tower))
+# print('///////')
+# print('уровень соединительной линии: ' + str(level_join_line))
+# print('фактическая стрела: ' + str(strela))
+# print('')
+# print('========================================')
+# print('Приведенная высота центра массы = ' + str(round(Hpr, 2)))
+# print('========================================')
 
-input('Press Enter to exit')
+# input('Press Enter to exit')
 
 
+with open('PerRez.txt', 'r') as file:
+    str2 = file.readlines()
+for i in range(len(str2)):
+    str2[i] = str2[i].rstrip() + '\n'
+final_str = ''
+
+str2[3] = str2[3][0:len(str2[3])-1] + '      H_pr = %s м%s' % (round(Hpr, 1), '\n')
+for i in str2:
+    final_str += i
+
+
+with open('PerRez.txt', 'w') as file:
+    file.write(final_str)
+# print(str2[2][len(str2[2]) - 2:len(str2[2])])
+# print(str2[2])
 
