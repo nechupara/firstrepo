@@ -2,6 +2,9 @@ from input_data import *
 from cables import *
 import math
 
+# Для спрощенного розрахунку коефіцієнту k_L у функції find_k_L() 1 - спрощенний розрахунок, 0 - повноцінний розрахунок
+simple_k_L = 1
+
 # словник класів безвідмовності від напруг:
 klass_bezv = {0.4: 1, 6: 2, 10: 2, 35: 2, 110: 3, 150: 3, 220: 3, 330: 3, 500: 4, 750: 4}
 
@@ -48,7 +51,7 @@ miu_g_dict = {0: 0, 5: 0.9, 10: 1.0, 20: 1.2, 30: 1.35, 50: 1.68, 70: 2.0}
 # Словник для визначення коефіцієнта k_g зміни розміру ожеледі за висоти розташування проводу:
 k_g_dict = {5: 0.8, 10: 1.0, 20: 1.15, 30: 1.3, 40: 1.4, 50: 1.45, 70: 1.6, 100: 1.75}
 
-# Температура ожеледі:
+# Температура ожеледі для територій з абсолютною висотою до 1000 м над рівнем моря:
 t_ozhel = -5
 
 
@@ -218,18 +221,20 @@ g_tu = g_tu_dict[type_area]
 
 
 # Коефіцієнт впливу довжини прогону. Розраховується за формулою, але приймається не менш, ніж 0,85 та не більше 1,2:
-def find_k_L():
-    if type_area == 1:
-        return 1.2
+def find_k_L(l, simple_k_L=0):
+    if simple_k_L:
+        if type_area == 1:
+            return 1.2
+        else:
+            return 1
     else:
-        return 1
-        # k_l_pr = 1.7 - 0.12*math.log(l_pr)
-        # if 0.85 <= k_l_pr <= 1.2:
-        #     return k_l_pr
-        # elif k_l_pr < 0.85:
-        #     return 0.85
-        # elif k_l_pr > 1.2:
-        #     return 1.2
+        k_l_pr = 1.7 - 0.12*math.log(l)
+        if 0.85 <= k_l_pr <= 1.2:
+            return k_l_pr
+        elif k_l_pr < 0.85:
+            return 0.85
+        elif k_l_pr > 1.2:
+            return 1.2
 
 
 # Коефіцієнт нерівномірності тиску вітру вздовж прогону ПЛ, але не більше, ніж 1,0:
@@ -242,7 +247,7 @@ def find_alfa():
 
 
 # Коефіцієнт динамічності:
-C_dc = g_tu * find_alfa() * find_k_L()
+C_dc = g_tu * find_alfa() * find_k_L(l_pr, simple_k_L)
 
 
 # Аеродинамічний коефіцієнт:
@@ -306,7 +311,7 @@ def find_k_g():
                                  k_g_dict[list_k_g_dict[i]], h)
 
 
-Q_m = Q_om * find_miu_g() * find_k_g() * C_c * find_k_L() * math.sin(math.radians(fi)) ** 2
+Q_m = Q_om * find_miu_g() * find_k_g() * C_c * find_k_L(l_pr, simple_k_L) * math.sin(math.radians(fi)) ** 2
 '''(КОНЕЦ БЛОКА) Лінійне навантаження від дії вітру на провід, трос, вкритий ожеледдю Q_m, Н/м'''
 
 '''Питомі навантаження та їх значення (гамми) (МПа/м)'''
@@ -338,8 +343,8 @@ gamma_7 = math.sqrt((gamma_1 + 0.9 * gamma_2) ** 2 + gamma_5 ** 2)
 # alfa берётся из характеристики провода. betta - 1/E. E - из характеристики провода.
 # 'sigma_sr' и 'sigma_nb' - из характеристики провода
 betta = 1 / cables[cable]['E']
-sigma_sr_temp = cables[cable]['sigma_sr']  # для спрощення вигляду формул
-sigma_nb_temp = cables[cable]['sigma_nb']  # для спрощення вигляду формул
+sigma_sr = cables[cable]['sigma_sr']  # для спрощення вигляду формул
+sigma_nb = cables[cable]['sigma_nb']  # для спрощення вигляду формул
 alfa_temp = cables[cable]['alfa']  # для спрощення вигляду формул
 
 # Найбільше питоме навантаження з ожеледних навантажень (gamma_3 gamma_7, МПа/м):
@@ -348,15 +353,15 @@ gamma_ozh_nb = max(gamma_3, gamma_7)
 
 # Функція для розрахунку першого критичного прогону
 def find_l_1k():
-    if ((6 * (betta * (sigma_sr_temp - sigma_nb_temp) + alfa_temp * (t_ser - t_min))) /
-            (1 - (sigma_sr_temp / sigma_nb_temp) ** 2)) < 0:
-        print((6 * (betta * (sigma_sr_temp - sigma_nb_temp) + alfa_temp * (t_ser - t_min))) /
-              (1 - (sigma_sr_temp / sigma_nb_temp) ** 2))
+    if ((6 * (betta * (sigma_sr - sigma_nb) + alfa_temp * (t_ser - t_min))) /
+            (1 - (sigma_sr / sigma_nb) ** 2)) < 0:
+        print((6 * (betta * (sigma_sr - sigma_nb) + alfa_temp * (t_ser - t_min))) /
+              (1 - (sigma_sr / sigma_nb) ** 2))
         return False
     else:
-        return 2 * sigma_sr_temp / gamma_1 * math.sqrt(
-          6 * (betta * (sigma_sr_temp - sigma_nb_temp) + alfa_temp * (t_ser - t_min)) /
-         (1 - (sigma_sr_temp / sigma_nb_temp) ** 2))
+        return 2 * sigma_sr / gamma_1 * math.sqrt(
+            6 * (betta * (sigma_sr - sigma_nb) + alfa_temp * (t_ser - t_min)) /
+            (1 - (sigma_sr / sigma_nb) ** 2))
 
 
 # Функція для розрахунку другого критичного прогону:
@@ -364,22 +369,28 @@ def find_l_2k():
     if 6*alfa_temp*(t_ozhel - t_min)/((gamma_ozh_nb/gamma_1)**2 - 1) < 0:
         return False
     else:
-        return 2*sigma_nb_temp/gamma_1*math.sqrt(6*alfa_temp*(t_ozhel - t_min)/((gamma_ozh_nb/gamma_1)**2 - 1))
+        return (2 * sigma_nb / gamma_1 * math.sqrt(6 * alfa_temp * (t_ozhel - t_min) /
+                                                   ((gamma_ozh_nb / gamma_1) ** 2 - 1)))
     
     
 # Функція для розрахунку третього критичного прогону:
 def find_l_3k():
-    if (6*(betta*(sigma_nb_temp - sigma_sr_temp) + alfa_temp*(t_ozhel - t_ser)) /
-            ((gamma_ozh_nb/gamma_1)**2 - (sigma_nb_temp/sigma_sr_temp)**2)) < 0:
+    if (6*(betta*(sigma_nb - sigma_sr) + alfa_temp*(t_ozhel - t_ser)) /
+            ((gamma_ozh_nb/gamma_1)**2 - (sigma_nb/sigma_sr)**2)) < 0:
         return False
     else:
-        return 2*sigma_nb_temp/gamma_1*math.sqrt(
-            6*(betta*(sigma_nb_temp - sigma_sr_temp) + alfa_temp*(t_ozhel - t_ser)) /
-            ((gamma_ozh_nb/gamma_1)**2 - (sigma_nb_temp/sigma_sr_temp)**2))
+        return 2 * sigma_nb / gamma_1 * math.sqrt(
+            6 * (betta * (sigma_nb - sigma_sr) + alfa_temp * (t_ozhel - t_ser)) /
+            ((gamma_ozh_nb/gamma_1) ** 2 - (sigma_nb / sigma_sr) ** 2))
 
-# l_1k = 2 * sigma_sr_temp / gamma_1 * math.sqrt(
-#     (6 * (betta * (sigma_sr_temp - sigma_nb_temp) + alfa_temp * (t_ser - t_min))) /
-#     (1 - (sigma_sr_temp / sigma_nb_temp) ** 2))
 
-# l_2k = 2*sigma_sr_temp
-#для коммита
+'''Кінець блоку розрухунку критичних прогонів'''
+
+
+'''Розрахунок габаритного, вітрового, вагового прогонів'''
+# Габаритна стріла провисання проводу f_gab:
+f_gab = h_op - liambda - h_gab
+
+# Попереднє значення довжини габаритного прогону при найбільшому навантаженні (gamma_ozh_nb), м:
+l_gab_ozh = math.sqrt(8*f_gab*sigma_nb/gamma_ozh_nb)
+

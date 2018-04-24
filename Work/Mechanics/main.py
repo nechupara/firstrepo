@@ -27,8 +27,11 @@ print('gamma6 = ' + str(gamma_6))
 print('gamma7 = ' + str(gamma_7))
 print('betta = ' + str(betta))
 # print('l-1k = ' + str(l_1k))
-# print('sigma_sr = ' + str(sigma_sr_temp), 'betta = ' + str(betta), 'alfa_temp = ' + str(alfa_temp),
-#       'sigma_nb = ' + str(sigma_nb_temp))
+# print('sigma_sr = ' + str(sigma_sr), 'betta = ' + str(betta), 'alfa_temp = ' + str(alfa_temp),
+#       'sigma_nb = ' + str(sigma_nb))
 print('find_l_1k = ' + str(find_l_1k()))
 print('find_l_2k = ' + str(find_l_2k()))
 print('find_l_3k = ' + str(find_l_3k()))
+print('f_gab = ' + str(f_gab))
+print('gamma_ozh_nb = ' + str(gamma_ozh_nb))
+print('l_gab_ozh = ' + str(l_gab_ozh))
