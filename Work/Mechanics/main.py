@@ -35,3 +35,6 @@ print('find_l_3k = ' + str(find_l_3k()))
 print('f_gab = ' + str(f_gab))
 print('gamma_ozh_nb = ' + str(gamma_ozh_nb))
 print('l_gab_ozh = ' + str(l_gab_ozh))
+
+
+print('k_L simple = %s, k_L 240m = %s' % (find_k_L(0, 1), find_k_L(240)))
